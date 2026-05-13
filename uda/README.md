@@ -1,0 +1,96 @@
+# Diffusion-UDA Research Workspace
+
+This directory is a research workspace for studying how diffusion-based
+generative models can improve unsupervised domain adaptation (UDA). The current
+implementation provides a runnable PyTorch ERM baseline, which is useful as a
+clean reference point before adding diffusion-generated images, diffusion-based
+feature regularization, or other generative adaptation strategies.
+
+ERM trains only on labeled source-domain images and evaluates on the target
+domain when target labels are available. This makes it a practical baseline for
+measuring whether future diffusion-assisted UDA components provide real gains.
+
+Supported dataset presets:
+
+- `officehome`: Art, Clipart, Product, Real_World
+- `office31`: amazon, dslr, webcam
+- `visda2017`: train/synthetic source and validation/real target
+- `domainnet`: clipart, infograph, painting, quickdraw, real, sketch
+
+## Install
+
+```powershell
+pip install -r uda/requirements.txt
+```
+
+## Expected ImageFolder Layout
+
+The loader accepts either a global data root or the dataset root itself. These
+layouts both work:
+
+```text
+data/
+  officehome/
+    Art/
+      class_a/image_001.jpg
+    Clipart/
+      class_a/image_002.jpg
+```
+
+```text
+OfficeHome/
+  Art/
+    class_a/image_001.jpg
+  Clipart/
+    class_a/image_002.jpg
+```
+
+## Run Examples
+
+OfficeHome:
+
+```powershell
+python uda/erm.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+Office31:
+
+```powershell
+python uda/erm.py --data-root D:\datasets --dataset office31 --source amazon --target webcam --arch resnet50 --epochs 20
+```
+
+VisDA2017:
+
+```powershell
+python uda/erm.py --data-root D:\datasets --dataset visda2017 --source train --target validation --arch resnet50 --epochs 20
+```
+
+DomainNet:
+
+```powershell
+python uda/erm.py --data-root D:\datasets --dataset domainnet --source real --target sketch --arch resnet50 --epochs 20
+```
+
+Smoke test without real data:
+
+```powershell
+python uda/erm.py --use-fake-data --dataset officehome --source Art --target Clipart --arch small_cnn --epochs 1 --steps-per-epoch 2 --batch-size 8 --eval-batch-size 8 --num-workers 0
+```
+
+## List File Mode
+
+For custom splits, pass list files. Source labels are required. Target labels are
+optional; unlabeled target rows are skipped during metric calculation.
+
+```text
+relative/path/image_001.jpg 0
+relative/path/image_002.jpg 1
+```
+
+```powershell
+python uda/erm.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
+Outputs are written to `runs/` by default and include `config.json`,
+`metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
+available.
