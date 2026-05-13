@@ -1,0 +1,5 @@
+runs/
+.vscode/
+__pycache__/
+*.pyc
+*.pt
