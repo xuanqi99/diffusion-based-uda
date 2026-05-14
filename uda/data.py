@@ -67,9 +67,11 @@ DATASET_SPECS: dict[str, DatasetSpec] = {
 class DataBundle:
     source_train: DataLoader
     source_eval: DataLoader
+    target_train: DataLoader | None
     target_eval: DataLoader | None
     num_classes: int
     source_size: int
+    target_train_size: int
     target_size: int
     class_to_idx: dict[str, int] | None = None
 
@@ -174,7 +176,7 @@ class RemappedImageFolder(Dataset):
 
 
 class FakeDomainDataset(Dataset):
-    """Small deterministic dataset used for smoke tests without downloading data."""
+    """Small deterministic dataset used for quick checks without downloading data."""
 
     def __init__(self, size: int, num_classes: int, image_size: int, seed_offset: int = 0) -> None:
         self.size = size
@@ -242,9 +244,11 @@ def build_data(args) -> DataBundle:
         raise ValueError("num_classes must be positive.")
 
     if args.target_list:
+        target_train: Dataset | None = ImageListDataset(args.target_list, data_root, train_transform, require_labels=False)
         target_eval: Dataset | None = ImageListDataset(args.target_list, data_root, eval_transform, require_labels=False)
     else:
         target_root = resolve_domain_root(data_root, spec, args.target)
+        target_train = RemappedImageFolder(target_root, transform=train_transform, class_to_idx=class_to_idx)
         target_eval = RemappedImageFolder(target_root, transform=eval_transform, class_to_idx=class_to_idx)
 
     source_train_loader = _make_loader(
@@ -255,14 +259,23 @@ def build_data(args) -> DataBundle:
         args=args,
     )
     source_eval_loader = _make_loader(source_eval, args.eval_batch_size, shuffle=False, drop_last=False, args=args)
+    target_train_loader = _make_loader(
+        target_train,
+        args.batch_size,
+        shuffle=True,
+        drop_last=len(target_train) >= args.batch_size,
+        args=args,
+    )
     target_eval_loader = _make_loader(target_eval, args.eval_batch_size, shuffle=False, drop_last=False, args=args)
 
     return DataBundle(
         source_train=source_train_loader,
         source_eval=source_eval_loader,
+        target_train=target_train_loader,
         target_eval=target_eval_loader,
         num_classes=num_classes,
         source_size=len(source_train),
+        target_train_size=len(target_train),
         target_size=len(target_eval),
         class_to_idx=class_to_idx,
     )
@@ -304,9 +317,11 @@ def _build_fake_data(args, default_num_classes: int, image_size: int) -> DataBun
     return DataBundle(
         source_train=_make_loader(source, args.batch_size, shuffle=True, drop_last=False, args=args),
         source_eval=_make_loader(source, args.eval_batch_size, shuffle=False, drop_last=False, args=args),
+        target_train=_make_loader(target, args.batch_size, shuffle=True, drop_last=False, args=args),
         target_eval=_make_loader(target, args.eval_batch_size, shuffle=False, drop_last=False, args=args),
         num_classes=num_classes,
         source_size=len(source),
+        target_train_size=len(target),
         target_size=len(target),
         class_to_idx=None,
     )
