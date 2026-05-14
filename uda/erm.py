@@ -49,7 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--eval-every", type=int, default=1)
     parser.add_argument("--save-every", type=int, default=0, help="Save periodic checkpoints when > 0.")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
-    parser.add_argument("--use-fake-data", action="store_true", help="Run without real images for smoke tests.")
+    parser.add_argument("--use-fake-data", action="store_true", help="Run without real images for quick checks.")
     parser.add_argument("--fake-size", type=int, default=64)
     return parser.parse_args()
 
