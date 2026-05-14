@@ -4,12 +4,12 @@ import torch
 from torch import nn
 
 
-class SmallCNN(nn.Module):
-    """Lightweight classifier for smoke tests and small custom datasets."""
+class SmallCNNBackbone(nn.Module):
+    """Lightweight feature extractor for quick runs and small custom datasets."""
 
-    def __init__(self, num_classes: int) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.features = nn.Sequential(
+        self.net = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
@@ -21,10 +21,21 @@ class SmallCNN(nn.Module):
             nn.ReLU(inplace=True),
             nn.AdaptiveAvgPool2d(1),
         )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x).flatten(1)
+
+
+class SmallCNN(nn.Module):
+    """Lightweight classifier for quick runs and small custom datasets."""
+
+    def __init__(self, num_classes: int) -> None:
+        super().__init__()
+        self.features = SmallCNNBackbone()
         self.classifier = nn.Linear(128, num_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.features(x).flatten(1)
+        x = self.features(x)
         return self.classifier(x)
 
 
@@ -41,6 +52,21 @@ def build_model(arch: str, num_classes: int, pretrained: bool = False) -> nn.Mod
     model_fn = getattr(models, arch)
     model = _build_torchvision_model(model_fn, arch, pretrained)
     return _replace_classifier(model, num_classes)
+
+
+def build_feature_model(arch: str, num_classes: int, pretrained: bool = False) -> tuple[nn.Module, nn.Module, int]:
+    arch = arch.lower()
+    if arch == "small_cnn":
+        return SmallCNNBackbone(), nn.Linear(128, num_classes), 128
+
+    from torchvision import models
+
+    if not hasattr(models, arch):
+        raise ValueError(f"Unknown model architecture '{arch}'.")
+
+    model_fn = getattr(models, arch)
+    model = _build_torchvision_model(model_fn, arch, pretrained)
+    return _split_feature_classifier(model, num_classes)
 
 
 def _build_torchvision_model(model_fn, arch: str, pretrained: bool) -> nn.Module:
@@ -80,3 +106,25 @@ def _replace_classifier(model: nn.Module, num_classes: int) -> nn.Module:
                     classifier[idx] = nn.Linear(classifier[idx].in_features, num_classes)
                     return model
     raise ValueError("Could not locate a replaceable classifier layer.")
+
+
+def _split_feature_classifier(model: nn.Module, num_classes: int) -> tuple[nn.Module, nn.Module, int]:
+    if hasattr(model, "fc") and isinstance(model.fc, nn.Linear):
+        feature_dim = model.fc.in_features
+        model.fc = nn.Identity()
+        return model, nn.Linear(feature_dim, num_classes), feature_dim
+
+    if hasattr(model, "classifier"):
+        classifier = getattr(model, "classifier")
+        if isinstance(classifier, nn.Linear):
+            feature_dim = classifier.in_features
+            model.classifier = nn.Identity()
+            return model, nn.Linear(feature_dim, num_classes), feature_dim
+        if isinstance(classifier, nn.Sequential):
+            for idx in range(len(classifier) - 1, -1, -1):
+                if isinstance(classifier[idx], nn.Linear):
+                    feature_dim = classifier[idx].in_features
+                    classifier[idx] = nn.Identity()
+                    return model, nn.Linear(feature_dim, num_classes), feature_dim
+
+    raise ValueError("Could not split this architecture into feature extractor and classifier.")
