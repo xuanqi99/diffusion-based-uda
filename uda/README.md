@@ -2,7 +2,7 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM and DANN baselines, which are
+implementation provides runnable PyTorch ERM, DANN, and AFN baselines, which are
 useful as clean reference points before adding diffusion-generated images,
 diffusion-based feature regularization, or other generative adaptation
 strategies.
@@ -12,6 +12,9 @@ domain when target labels are available. This makes it a practical baseline for
 measuring whether future diffusion-assisted UDA components provide real gains.
 DANN trains with source classification loss plus a domain-adversarial loss over
 source and target images, while never using target class labels for training.
+AFN trains with source classification loss plus adaptive feature norm
+regularization over source and target images, while never using target class
+labels for training.
 
 Supported dataset presets:
 
@@ -52,6 +55,7 @@ OfficeHome/
 
 - `ERM`: source-only empirical risk minimization.
 - `DANN`: domain-adversarial neural network with a gradient reversal layer.
+- `AFN`: adaptive feature norm, with `SAFN` by default and optional `HAFN`.
 
 ## Run Examples
 
@@ -65,6 +69,12 @@ OfficeHome with DANN:
 
 ```powershell
 python uda/dann.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with AFN:
+
+```powershell
+python uda/afn.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -103,6 +113,12 @@ The same split files can be used with DANN:
 
 ```powershell
 python uda/dann.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
+The same split files can be used with AFN:
+
+```powershell
+python uda/afn.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
 Outputs are written to `runs/` by default and include `config.json`,
