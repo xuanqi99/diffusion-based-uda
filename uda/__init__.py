@@ -1,4 +1,4 @@
-"""Runnable ERM baseline for unsupervised domain adaptation datasets."""
+"""Runnable ERM, DANN, AFN, and CDAN baselines for UDA datasets."""
 
 __all__ = ["__version__"]
 
