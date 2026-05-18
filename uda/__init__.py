@@ -1,4 +1,4 @@
-"""Runnable ERM, DANN, AFN, and CDAN baselines for UDA datasets."""
+"""Runnable ERM, DANN, AFN, CDAN, and MDD baselines for UDA datasets."""
 
 __all__ = ["__version__"]
 

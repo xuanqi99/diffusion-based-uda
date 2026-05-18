@@ -2,10 +2,10 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM, DANN, AFN, and CDAN baselines,
-which are useful as clean reference points before adding diffusion-generated
-images, diffusion-based feature regularization, or other generative adaptation
-strategies.
+implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, and MDD
+baselines, which are useful as clean reference points before adding
+diffusion-generated images, diffusion-based feature regularization, or other
+generative adaptation strategies.
 
 ERM trains only on labeled source-domain images and evaluates on the target
 domain when target labels are available. This makes it a practical baseline for
@@ -18,7 +18,9 @@ labels for training. CDAN trains with source classification loss plus a
 conditional domain-adversarial loss whose discriminator sees the multilinear
 interaction between features and classifier predictions. It supports the common
 randomized multilinear map for large feature/class spaces, exact multilinear
-conditioning, and optional CDAN+E entropy conditioning.
+conditioning, and optional CDAN+E entropy conditioning. MDD trains with source
+classification loss plus margin disparity discrepancy from a second adversarial
+classifier head, aligning domains without using target labels.
 
 Supported dataset presets:
 
@@ -62,6 +64,8 @@ OfficeHome/
 - `AFN`: adaptive feature norm, with `SAFN` by default and optional `HAFN`.
 - `CDAN`: conditional domain-adversarial network with randomized multilinear
   conditioning by default and optional `--entropy-conditioning` for CDAN+E.
+- `MDD`: margin disparity discrepancy with a main classifier head and an
+  adversarial classifier head.
 
 ## Run Examples
 
@@ -93,6 +97,12 @@ OfficeHome with CDAN+E entropy conditioning:
 
 ```powershell
 python uda/cdan.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32 --entropy-conditioning
+```
+
+OfficeHome with MDD:
+
+```powershell
+python uda/mdd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -143,6 +153,12 @@ The same split files can be used with CDAN:
 
 ```powershell
 python uda/cdan.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
+The same split files can be used with MDD:
+
+```powershell
+python uda/mdd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
 Outputs are written to `runs/` by default and include `config.json`,

@@ -3,7 +3,7 @@
 This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
-The current codebase includes runnable PyTorch ERM, DANN, AFN, and CDAN
+The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, and MDD
 baselines under `uda/`. These standard UDA methods are intended as clean
 reference points for future diffusion-assisted experiments, such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -46,6 +46,12 @@ Run an OfficeHome CDAN baseline:
 
 ```powershell
 python uda/cdan.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+Run an OfficeHome MDD baseline:
+
+```powershell
+python uda/mdd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
