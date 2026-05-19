@@ -20,7 +20,9 @@ interaction between features and classifier predictions. It supports the common
 randomized multilinear map for large feature/class spaces, exact multilinear
 conditioning, and optional CDAN+E entropy conditioning. MDD trains with source
 classification loss plus margin disparity discrepancy from a second adversarial
-classifier head, aligning domains without using target labels.
+classifier head, aligning domains without using target labels; this follows the
+MDD baseline reported in `A Closer Look at Smoothness in Domain Adversarial
+Training`.
 
 Supported dataset presets:
 
@@ -65,7 +67,8 @@ OfficeHome/
 - `CDAN`: conditional domain-adversarial network with randomized multilinear
   conditioning by default and optional `--entropy-conditioning` for CDAN+E.
 - `MDD`: margin disparity discrepancy with a main classifier head and an
-  adversarial classifier head.
+  adversarial classifier head, following the MDD baseline reported by Rangwani
+  et al. in `A Closer Look at Smoothness in Domain Adversarial Training`.
 
 ## Run Examples
 
@@ -164,3 +167,9 @@ python uda/mdd.py --data-root D:\datasets --dataset officehome --source-list sou
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
+
+## References
+
+- Harsh Rangwani, Sumukh K Aithal, Mayank Mishra, Arihant Jain, and R.
+  Venkatesh Babu. `A Closer Look at Smoothness in Domain Adversarial Training`,
+  ICML 2022. https://proceedings.mlr.press/v162/rangwani22a.html

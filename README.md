@@ -54,5 +54,8 @@ Run an OfficeHome MDD baseline:
 python uda/mdd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
+The MDD entry follows the margin disparity discrepancy baseline reported in
+`A Closer Look at Smoothness in Domain Adversarial Training` (ICML 2022).
+
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

@@ -1,3 +1,11 @@
+"""MDD baseline used in "A Closer Look at Smoothness in Domain Adversarial Training".
+
+That paper reports MDD as a domain-adversarial UDA baseline. The discrepancy
+term here is the standard margin disparity discrepancy objective used by that
+baseline: a main classifier supplies reference predictions and an adversarial
+classifier head is optimized through a gradient reversal layer.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -278,6 +286,7 @@ def compute_mdd_loss(
     margin: float,
     eps: float,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    # Margin disparity discrepancy baseline from the smoothness-in-DAT paper's MDD row.
     source_reference = source_logits.detach().argmax(dim=1)
     target_reference = target_logits.detach().argmax(dim=1)
     source_loss = margin * F.cross_entropy(source_adv_logits, source_reference)
