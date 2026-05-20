@@ -2,7 +2,7 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, and MDD
+implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, and JAN
 baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
@@ -22,7 +22,9 @@ conditioning, and optional CDAN+E entropy conditioning. MDD trains with source
 classification loss plus margin disparity discrepancy from a second adversarial
 classifier head, aligning domains without using target labels; this follows the
 MDD baseline reported in `A Closer Look at Smoothness in Domain Adversarial
-Training`.
+Training`. JAN trains with source classification loss plus joint maximum mean
+discrepancy over source and target feature-prediction distributions, following
+`Deep Transfer Learning with Joint Adaptation Networks`.
 
 Supported dataset presets:
 
@@ -69,6 +71,8 @@ OfficeHome/
 - `MDD`: margin disparity discrepancy with a main classifier head and an
   adversarial classifier head, following the MDD baseline reported by Rangwani
   et al. in `A Closer Look at Smoothness in Domain Adversarial Training`.
+- `JAN`: joint adaptation network with multi-kernel JMMD over features and
+  classifier predictions.
 
 ## Run Examples
 
@@ -106,6 +110,12 @@ OfficeHome with MDD:
 
 ```powershell
 python uda/mdd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with JAN:
+
+```powershell
+python uda/jan.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -164,12 +174,21 @@ The same split files can be used with MDD:
 python uda/mdd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with JAN:
+
+```powershell
+python uda/jan.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Mingsheng Long, Han Zhu, Jianmin Wang, and Michael I. Jordan. `Deep Transfer
+  Learning with Joint Adaptation Networks`, ICML 2017.
+  https://proceedings.mlr.press/v70/long17a.html
 - Harsh Rangwani, Sumukh K Aithal, Mayank Mishra, Arihant Jain, and R.
   Venkatesh Babu. `A Closer Look at Smoothness in Domain Adversarial Training`,
   ICML 2022. https://proceedings.mlr.press/v162/rangwani22a.html
