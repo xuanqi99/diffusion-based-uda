@@ -2,7 +2,7 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, and JAN
+implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, and GTA
 baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
@@ -24,7 +24,10 @@ classifier head, aligning domains without using target labels; this follows the
 MDD baseline reported in `A Closer Look at Smoothness in Domain Adversarial
 Training`. JAN trains with source classification loss plus joint maximum mean
 discrepancy over source and target feature-prediction distributions, following
-`Deep Transfer Learning with Joint Adaptation Networks`.
+`Deep Transfer Learning with Joint Adaptation Networks`. GTA trains with source
+classification loss plus an auxiliary-classifier GAN branch whose generator and
+discriminator provide adaptation gradients for source and unlabeled target
+embeddings, following `Generate To Adapt`.
 
 Supported dataset presets:
 
@@ -73,6 +76,8 @@ OfficeHome/
   et al. in `A Closer Look at Smoothness in Domain Adversarial Training`.
 - `JAN`: joint adaptation network with multi-kernel JMMD over features and
   classifier predictions.
+- `GTA`: generate-to-adapt training with an F-C classification stream and an
+  auxiliary-classifier GAN stream over generated source-like images.
 
 ## Run Examples
 
@@ -116,6 +121,12 @@ OfficeHome with JAN:
 
 ```powershell
 python uda/jan.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with GTA:
+
+```powershell
+python uda/gta.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -180,12 +191,22 @@ The same split files can be used with JAN:
 python uda/jan.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with GTA:
+
+```powershell
+python uda/gta.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Swami Sankaranarayanan, Yogesh Balaji, Carlos D. Castillo, and Rama Chellappa.
+  `Generate To Adapt: Aligning Domains using Generative Adversarial Networks`,
+  CVPR 2018.
+  https://openaccess.thecvf.com/content_cvpr_2018/papers/Sankaranarayanan_Generate_to_Adapt_CVPR_2018_paper.pdf
 - Mingsheng Long, Han Zhu, Jianmin Wang, and Michael I. Jordan. `Deep Transfer
   Learning with Joint Adaptation Networks`, ICML 2017.
   https://proceedings.mlr.press/v70/long17a.html
