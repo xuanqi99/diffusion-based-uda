@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-and GTA baselines under `uda/`. These standard UDA methods are intended as clean
+GTA, and ADDA baselines under `uda/`. These standard UDA methods are intended as clean
 reference points for future diffusion-assisted experiments, such as
 diffusion-generated target style images, synthetic source augmentation, or
 generative feature regularization.
@@ -75,6 +75,16 @@ python uda/gta.py --data-root D:\datasets --dataset officehome --source Art --ta
 The GTA entry follows `Generate To Adapt: Aligning Domains using Generative
 Adversarial Networks` (CVPR 2018) with a source classification stream and an
 auxiliary-classifier GAN adaptation stream.
+
+Run an OfficeHome ADDA baseline:
+
+```powershell
+python uda/adda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --source-epochs 5 --epochs 20 --batch-size 32
+```
+
+The ADDA entry follows `Adversarial Discriminative Domain Adaptation`
+(CVPR 2017) with separate source and target encoders and a domain
+discriminator trained in two stages.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

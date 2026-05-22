@@ -2,8 +2,8 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, and GTA
-baselines, which are useful as clean reference points before adding
+implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, GTA,
+and ADDA baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -27,7 +27,10 @@ discrepancy over source and target feature-prediction distributions, following
 `Deep Transfer Learning with Joint Adaptation Networks`. GTA trains with source
 classification loss plus an auxiliary-classifier GAN branch whose generator and
 discriminator provide adaptation gradients for source and unlabeled target
-embeddings, following `Generate To Adapt`.
+embeddings, following `Generate To Adapt`. ADDA first pretrains a source encoder
+and classifier, then freezes them while adversarially training a separate target
+encoder to fool a domain discriminator, following `Adversarial Discriminative
+Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -78,6 +81,8 @@ OfficeHome/
   classifier predictions.
 - `GTA`: generate-to-adapt training with an F-C classification stream and an
   auxiliary-classifier GAN stream over generated source-like images.
+- `ADDA`: adversarial discriminative domain adaptation with separate source and
+  target encoders trained in source-supervised and target-adversarial stages.
 
 ## Run Examples
 
@@ -127,6 +132,12 @@ OfficeHome with GTA:
 
 ```powershell
 python uda/gta.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with ADDA:
+
+```powershell
+python uda/adda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --source-epochs 5 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -197,12 +208,21 @@ The same split files can be used with GTA:
 python uda/gta.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with ADDA:
+
+```powershell
+python uda/adda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Eric Tzeng, Judy Hoffman, Kate Saenko, and Trevor Darrell. `Adversarial
+  Discriminative Domain Adaptation`, CVPR 2017.
+  https://openaccess.thecvf.com/content_cvpr_2017/html/Tzeng_Adversarial_Discriminative_Domain_CVPR_2017_paper.html
 - Swami Sankaranarayanan, Yogesh Balaji, Carlos D. Castillo, and Rama Chellappa.
   `Generate To Adapt: Aligning Domains using Generative Adversarial Networks`,
   CVPR 2018.
