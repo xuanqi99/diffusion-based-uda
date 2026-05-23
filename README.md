@@ -4,8 +4,9 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-GTA, and ADDA baselines under `uda/`. These standard UDA methods are intended as clean
-reference points for future diffusion-assisted experiments, such as
+GTA, ADDA, and MCD baselines under `uda/`. These standard UDA methods are
+intended as clean reference points for future diffusion-assisted experiments,
+such as
 diffusion-generated target style images, synthetic source augmentation, or
 generative feature regularization.
 
@@ -85,6 +86,16 @@ python uda/adda.py --data-root D:\datasets --dataset officehome --source Art --t
 The ADDA entry follows `Adversarial Discriminative Domain Adaptation`
 (CVPR 2017) with separate source and target encoders and a domain
 discriminator trained in two stages.
+
+Run an OfficeHome MCD baseline:
+
+```powershell
+python uda/mcd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The MCD entry follows `Maximum Classifier Discrepancy for Unsupervised Domain
+Adaptation` (CVPR 2018) with two classifier heads that maximize target
+prediction discrepancy and a feature generator that minimizes it.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

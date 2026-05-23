@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, GTA,
-and ADDA baselines, which are useful as clean reference points before adding
+ADDA, and MCD baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -30,7 +30,10 @@ discriminator provide adaptation gradients for source and unlabeled target
 embeddings, following `Generate To Adapt`. ADDA first pretrains a source encoder
 and classifier, then freezes them while adversarially training a separate target
 encoder to fool a domain discriminator, following `Adversarial Discriminative
-Domain Adaptation`.
+Domain Adaptation`. MCD trains a shared feature extractor with two classifier
+heads, maximizes their target prediction discrepancy while preserving source
+classification, then updates the feature extractor to minimize that discrepancy,
+following `Maximum Classifier Discrepancy for Unsupervised Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -83,6 +86,8 @@ OfficeHome/
   auxiliary-classifier GAN stream over generated source-like images.
 - `ADDA`: adversarial discriminative domain adaptation with separate source and
   target encoders trained in source-supervised and target-adversarial stages.
+- `MCD`: maximum classifier discrepancy with two task classifiers that expose
+  and then reduce target-domain prediction disagreement.
 
 ## Run Examples
 
@@ -138,6 +143,12 @@ OfficeHome with ADDA:
 
 ```powershell
 python uda/adda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --source-epochs 5 --epochs 20 --batch-size 32
+```
+
+OfficeHome with MCD:
+
+```powershell
+python uda/mcd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -214,12 +225,22 @@ The same split files can be used with ADDA:
 python uda/adda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with MCD:
+
+```powershell
+python uda/mcd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Kuniaki Saito, Kohei Watanabe, Yoshitaka Ushiku, and Tatsuya Harada.
+  `Maximum Classifier Discrepancy for Unsupervised Domain Adaptation`, CVPR
+  2018.
+  https://openaccess.thecvf.com/content_cvpr_2018/html/Saito_Maximum_Classifier_Discrepancy_CVPR_2018_paper.html
 - Eric Tzeng, Judy Hoffman, Kate Saenko, and Trevor Darrell. `Adversarial
   Discriminative Domain Adaptation`, CVPR 2017.
   https://openaccess.thecvf.com/content_cvpr_2017/html/Tzeng_Adversarial_Discriminative_Domain_CVPR_2017_paper.html
