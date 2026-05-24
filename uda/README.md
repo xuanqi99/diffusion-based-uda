@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, GTA,
-ADDA, and MCD baselines, which are useful as clean reference points before adding
+ADDA, MCD, and SymmNets baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -34,6 +34,10 @@ Domain Adaptation`. MCD trains a shared feature extractor with two classifier
 heads, maximizes their target prediction discrepancy while preserving source
 classification, then updates the feature extractor to minimize that discrepancy,
 following `Maximum Classifier Discrepancy for Unsupervised Domain Adaptation`.
+SymmNets trains symmetric source and target task classifiers, uses their
+concatenated logits as a shared 2K classifier for domain discrimination, and
+updates the feature extractor with category-level and domain-level confusion,
+following `Domain-Symmetric Networks for Adversarial Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -88,6 +92,9 @@ OfficeHome/
   target encoders trained in source-supervised and target-adversarial stages.
 - `MCD`: maximum classifier discrepancy with two task classifiers that expose
   and then reduce target-domain prediction disagreement.
+- `SymmNets`: domain-symmetric networks with source and target task classifiers,
+  a shared 2K classifier, category-level confusion, domain-level confusion, and
+  target entropy minimization.
 
 ## Run Examples
 
@@ -149,6 +156,12 @@ OfficeHome with MCD:
 
 ```powershell
 python uda/mcd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with SymmNets:
+
+```powershell
+python uda/symmnets.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -231,12 +244,21 @@ The same split files can be used with MCD:
 python uda/mcd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with SymmNets:
+
+```powershell
+python uda/symmnets.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Yabin Zhang, Hui Tang, Kui Jia, and Mingkui Tan. `Domain-Symmetric Networks
+  for Adversarial Domain Adaptation`, CVPR 2019.
+  https://openaccess.thecvf.com/content_CVPR_2019/html/Zhang_Domain-Symmetric_Networks_for_Adversarial_Domain_Adaptation_CVPR_2019_paper.html
 - Kuniaki Saito, Kohei Watanabe, Yoshitaka Ushiku, and Tatsuya Harada.
   `Maximum Classifier Discrepancy for Unsupervised Domain Adaptation`, CVPR
   2018.
