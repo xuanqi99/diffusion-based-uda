@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-GTA, ADDA, MCD, SymmNets, and GVB-GD baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, and GVB-GD baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -66,6 +66,16 @@ python uda/jan.py --data-root D:\datasets --dataset officehome --source Art --ta
 
 The JAN entry follows `Deep Transfer Learning with Joint Adaptation Networks`
 (ICML 2017) and aligns feature-prediction joint distributions with JMMD.
+
+Run an OfficeHome CAN baseline:
+
+```powershell
+python uda/can.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The CAN entry follows `Contrastive Adaptation Network for Unsupervised Domain
+Adaptation` (CVPR 2019) with class-aware contrastive domain discrepancy over
+source labels and target pseudo-labels.
 
 Run an OfficeHome GTA baseline:
 

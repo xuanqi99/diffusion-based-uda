@@ -2,8 +2,8 @@
 
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
-implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, GTA,
-ADDA, MCD, SymmNets, and GVB-GD baselines, which are useful as clean reference points before adding
+implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
+GTA, ADDA, MCD, SymmNets, and GVB-GD baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -24,7 +24,10 @@ classifier head, aligning domains without using target labels; this follows the
 MDD baseline reported in `A Closer Look at Smoothness in Domain Adversarial
 Training`. JAN trains with source classification loss plus joint maximum mean
 discrepancy over source and target feature-prediction distributions, following
-`Deep Transfer Learning with Joint Adaptation Networks`. GTA trains with source
+`Deep Transfer Learning with Joint Adaptation Networks`. CAN trains with source
+classification loss plus class-aware contrastive domain discrepancy over source
+labels and target pseudo-labels, following `Contrastive Adaptation Network for
+Unsupervised Domain Adaptation`. GTA trains with source
 classification loss plus an auxiliary-classifier GAN branch whose generator and
 discriminator provide adaptation gradients for source and unlabeled target
 embeddings, following `Generate To Adapt`. ADDA first pretrains a source encoder
@@ -90,6 +93,8 @@ OfficeHome/
   et al. in `A Closer Look at Smoothness in Domain Adversarial Training`.
 - `JAN`: joint adaptation network with multi-kernel JMMD over features and
   classifier predictions.
+- `CAN`: contrastive adaptation network with class-aware CDD, target
+  pseudo-labeling, intra-class domain alignment, and inter-class separation.
 - `GTA`: generate-to-adapt training with an F-C classification stream and an
   auxiliary-classifier GAN stream over generated source-like images.
 - `ADDA`: adversarial discriminative domain adaptation with separate source and
@@ -144,6 +149,12 @@ OfficeHome with JAN:
 
 ```powershell
 python uda/jan.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with CAN:
+
+```powershell
+python uda/can.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 OfficeHome with GTA:
@@ -238,6 +249,12 @@ The same split files can be used with JAN:
 python uda/jan.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with CAN:
+
+```powershell
+python uda/can.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 The same split files can be used with GTA:
 
 ```powershell
@@ -274,6 +291,9 @@ available.
 
 ## References
 
+- Guoliang Kang, Lu Jiang, Yi Yang, and Alexander G. Hauptmann. `Contrastive
+  Adaptation Network for Unsupervised Domain Adaptation`, CVPR 2019.
+  https://openaccess.thecvf.com/content_CVPR_2019/papers/Kang_Contrastive_Adaptation_Network_for_Unsupervised_Domain_Adaptation_CVPR_2019_paper.pdf
 - Shuhao Cui, Shuhui Wang, Junbao Zhuo, Chi Su, Qingming Huang, and Qi Tian.
   `Gradually Vanishing Bridge for Adversarial Domain Adaptation`, CVPR 2020.
   https://openaccess.thecvf.com/content_CVPR_2020/html/Cui_Gradually_Vanishing_Bridge_for_Adversarial_Domain_Adaptation_CVPR_2020_paper.html
