@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, GTA,
-ADDA, MCD, and SymmNets baselines, which are useful as clean reference points before adding
+ADDA, MCD, SymmNets, and GVB-GD baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -38,6 +38,10 @@ SymmNets trains symmetric source and target task classifiers, uses their
 concatenated logits as a shared 2K classifier for domain discrimination, and
 updates the feature extractor with category-level and domain-level confusion,
 following `Domain-Symmetric Networks for Adversarial Domain Adaptation`.
+GVB-GD trains a source classifier with a gradually vanishing generator bridge,
+feeds classifier probabilities to an entropy-weighted domain discriminator, and
+uses a discriminator bridge to reduce over-confident adversarial alignment,
+following `Gradually Vanishing Bridge for Adversarial Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -95,6 +99,8 @@ OfficeHome/
 - `SymmNets`: domain-symmetric networks with source and target task classifiers,
   a shared 2K classifier, category-level confusion, domain-level confusion, and
   target entropy minimization.
+- `GVB-GD`: gradually vanishing bridge for the classifier generator and domain
+  discriminator with entropy-weighted adversarial alignment.
 
 ## Run Examples
 
@@ -162,6 +168,12 @@ OfficeHome with SymmNets:
 
 ```powershell
 python uda/symmnets.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with GVB-GD:
+
+```powershell
+python uda/gvbgd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -250,12 +262,21 @@ The same split files can be used with SymmNets:
 python uda/symmnets.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with GVB-GD:
+
+```powershell
+python uda/gvbgd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
 
 ## References
 
+- Shuhao Cui, Shuhui Wang, Junbao Zhuo, Chi Su, Qingming Huang, and Qi Tian.
+  `Gradually Vanishing Bridge for Adversarial Domain Adaptation`, CVPR 2020.
+  https://openaccess.thecvf.com/content_CVPR_2020/html/Cui_Gradually_Vanishing_Bridge_for_Adversarial_Domain_Adaptation_CVPR_2020_paper.html
 - Yabin Zhang, Hui Tang, Kui Jia, and Mingkui Tan. `Domain-Symmetric Networks
   for Adversarial Domain Adaptation`, CVPR 2019.
   https://openaccess.thecvf.com/content_CVPR_2019/html/Zhang_Domain-Symmetric_Networks_for_Adversarial_Domain_Adaptation_CVPR_2019_paper.html
