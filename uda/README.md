@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, and GVB-GD baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, and ETD baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -45,6 +45,11 @@ GVB-GD trains a source classifier with a gradually vanishing generator bridge,
 feeds classifier probabilities to an entropy-weighted domain discriminator, and
 uses a discriminator bridge to reduce over-confident adversarial alignment,
 following `Gradually Vanishing Bridge for Adversarial Domain Adaptation`.
+ETD trains with source classification loss plus an attention-reweighted
+transport distance between source and target feature batches. It represents the
+Kantorovich potentials with neural networks and adds target entropy
+minimization, following `Enhanced Transport Distance for Unsupervised Domain
+Adaptation`.
 
 Supported dataset presets:
 
@@ -106,6 +111,8 @@ OfficeHome/
   target entropy minimization.
 - `GVB-GD`: gradually vanishing bridge for the classifier generator and domain
   discriminator with entropy-weighted adversarial alignment.
+- `ETD`: enhanced transport distance with attention-aware transport costs,
+  neural Kantorovich potentials, and target entropy minimization.
 
 ## Run Examples
 
@@ -185,6 +192,12 @@ OfficeHome with GVB-GD:
 
 ```powershell
 python uda/gvbgd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with ETD:
+
+```powershell
+python uda/etd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32 --optimizer adamw
 ```
 
 Office31:
@@ -285,6 +298,12 @@ The same split files can be used with GVB-GD:
 python uda/gvbgd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with ETD:
+
+```powershell
+python uda/etd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65 --optimizer adamw
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -317,3 +336,6 @@ available.
 - Harsh Rangwani, Sumukh K Aithal, Mayank Mishra, Arihant Jain, and R.
   Venkatesh Babu. `A Closer Look at Smoothness in Domain Adversarial Training`,
   ICML 2022. https://proceedings.mlr.press/v162/rangwani22a.html
+- Mengxue Li, Yi-Ming Zhai, You-Wei Luo, Peng-Fei Ge, and Chuan-Xian Ren.
+  `Enhanced Transport Distance for Unsupervised Domain Adaptation`, CVPR 2020.
+  https://openaccess.thecvf.com/content_CVPR_2020/html/Li_Enhanced_Transport_Distance_for_Unsupervised_Domain_Adaptation_CVPR_2020_paper.html

@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, and GVB-GD baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, and ETD baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -126,6 +126,16 @@ python uda/gvbgd.py --data-root D:\datasets --dataset officehome --source Art --
 The GVB-GD entry follows `Gradually Vanishing Bridge for Adversarial Domain
 Adaptation` (CVPR 2020) with generator-side and discriminator-side bridge
 modules over an entropy-weighted domain-adversarial objective.
+
+Run an OfficeHome ETD baseline:
+
+```powershell
+python uda/etd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32 --optimizer adamw
+```
+
+The ETD entry follows `Enhanced Transport Distance for Unsupervised Domain
+Adaptation` (CVPR 2020) with attention-reweighted transport costs,
+Kantorovich potential networks, and target entropy minimization.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.
