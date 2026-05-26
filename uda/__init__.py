@@ -1,4 +1,4 @@
-"""Runnable ERM, DANN, AFN, CDAN, MDD, JAN, CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, and ETD baselines for UDA datasets."""
+"""Runnable ERM, DANN, AFN, CDAN, MDD, JAN, CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, and SRDC baselines for UDA datasets."""
 
 __all__ = ["__version__"]
 

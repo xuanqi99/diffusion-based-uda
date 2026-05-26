@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, and ETD baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, and SRDC baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -136,6 +136,17 @@ python uda/etd.py --data-root D:\datasets --dataset officehome --source Art --ta
 The ETD entry follows `Enhanced Transport Distance for Unsupervised Domain
 Adaptation` (CVPR 2020) with attention-reweighted transport costs,
 Kantorovich potential networks, and target entropy minimization.
+
+Run an OfficeHome SRDC baseline:
+
+```powershell
+python uda/srdc.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The SRDC entry follows `Unsupervised Domain Adaptation via Structurally
+Regularized Deep Clustering` (CVPR 2020) with target discriminative clustering,
+feature-space clustering, source structural regularization, and optional soft
+source sample weighting.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.
