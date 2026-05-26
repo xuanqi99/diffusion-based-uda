@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, and SRDC baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, and ACTIR baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -55,6 +55,12 @@ discrimination through deep clustering. It combines target auxiliary-distributio
 clustering, feature-space clustering, source structural regularization, and
 optional source sample soft selection, following `Unsupervised Domain Adaptation
 via Structurally Regularized Deep Clustering`.
+ACTIR learns an invariant classifier component and a transportable adaptive
+component. This UDA implementation trains source labels with combined and
+invariant losses, penalizes conditional dependence between the two components,
+adds an adaptive-gradient penalty, and adapts on confident target pseudo-labels,
+following `Invariant and Transportable Representations for Anti-Causal Domain
+Shifts`.
 
 Supported dataset presets:
 
@@ -121,6 +127,9 @@ OfficeHome/
 - `SRDC`: structurally regularized deep clustering with target
   auxiliary-distribution clustering, feature-space Student-t clustering, source
   structural regularization, and optional soft source sample weighting.
+- `ACTIR`: adaptive-invariant representation learning with invariant and
+  adaptive classifier heads, conditional decorrelation, an adaptive-gradient
+  penalty, and target pseudo-label adaptation.
 
 ## Run Examples
 
@@ -212,6 +221,12 @@ OfficeHome with SRDC:
 
 ```powershell
 python uda/srdc.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with ACTIR:
+
+```powershell
+python uda/actir.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -324,6 +339,12 @@ The same split files can be used with SRDC:
 python uda/srdc.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with ACTIR:
+
+```powershell
+python uda/actir.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -362,3 +383,6 @@ available.
 - Hui Tang, Ke Chen, and Kui Jia. `Unsupervised Domain Adaptation via
   Structurally Regularized Deep Clustering`, CVPR 2020.
   https://openaccess.thecvf.com/content_CVPR_2020/html/Tang_Unsupervised_Domain_Adaptation_via_Structurally_Regularized_Deep_Clustering_CVPR_2020_paper.html
+- Yibo Jiang and Victor Veitch. `Invariant and Transportable Representations for
+  Anti-Causal Domain Shifts`, NeurIPS 2022 Workshop on Distribution Shifts.
+  https://openreview.net/forum?id=w1FmeUdwxEg
