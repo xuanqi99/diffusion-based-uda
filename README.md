@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, and ACTIR baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, and TCM baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -158,6 +158,17 @@ The ACTIR-style entry follows `Invariant and Transportable Representations for
 Anti-Causal Domain Shifts` with separate invariant and adaptive classifier
 components, conditional decorrelation, an adaptive-gradient penalty, and
 target-domain pseudo-label adaptation.
+
+Run an OfficeHome TCM baseline:
+
+```powershell
+python uda/tcm.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The TCM-style entry follows `Transporting Causal Mechanisms for Unsupervised
+Domain Adaptation` (ICCV 2021) with learned mechanism proxies, interventional
+prediction over mechanism priors, mechanism alignment, and target pseudo-label
+adaptation.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

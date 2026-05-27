@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, and ACTIR baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, and TCM baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -61,6 +61,11 @@ invariant losses, penalizes conditional dependence between the two components,
 adds an adaptive-gradient penalty, and adapts on confident target pseudo-labels,
 following `Invariant and Transportable Representations for Anti-Causal Domain
 Shifts`.
+TCM transports causal mechanisms by learning multiple proxy mechanism heads and
+making interventional predictions over source/target mechanism priors. This
+lightweight feature-level implementation aligns mechanism proxies, regularizes
+mechanism diversity, and adapts on confident target pseudo-labels, following
+`Transporting Causal Mechanisms for Unsupervised Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -130,6 +135,9 @@ OfficeHome/
 - `ACTIR`: adaptive-invariant representation learning with invariant and
   adaptive classifier heads, conditional decorrelation, an adaptive-gradient
   penalty, and target pseudo-label adaptation.
+- `TCM`: transporting causal mechanisms with learned mechanism proxies,
+  interventional mechanism-prior prediction, mechanism alignment, diversity
+  regularization, and confident target pseudo-label adaptation.
 
 ## Run Examples
 
@@ -227,6 +235,12 @@ OfficeHome with ACTIR:
 
 ```powershell
 python uda/actir.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with TCM:
+
+```powershell
+python uda/tcm.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -345,6 +359,12 @@ The same split files can be used with ACTIR:
 python uda/actir.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with TCM:
+
+```powershell
+python uda/tcm.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -386,3 +406,7 @@ available.
 - Yibo Jiang and Victor Veitch. `Invariant and Transportable Representations for
   Anti-Causal Domain Shifts`, NeurIPS 2022 Workshop on Distribution Shifts.
   https://openreview.net/forum?id=w1FmeUdwxEg
+- Zhongqi Yue, Tan Wang, Qianru Sun, Xian-Sheng Hua, and Hanwang Zhang.
+  `Transporting Causal Mechanisms for Unsupervised Domain Adaptation`, ICCV
+  2021.
+  https://openaccess.thecvf.com/content/ICCV2021/html/Yue_Transporting_Causal_Mechanisms_for_Unsupervised_Domain_Adaptation_ICCV_2021_paper.html
