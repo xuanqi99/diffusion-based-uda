@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, and TCM baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, and ICDA baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -66,6 +66,11 @@ making interventional predictions over source/target mechanism priors. This
 lightweight feature-level implementation aligns mechanism proxies, regularizes
 mechanism diversity, and adapts on confident target pseudo-labels, following
 `Transporting Causal Mechanisms for Unsupervised Domain Adaptation`.
+ICDA performs implicit class-conditioned domain alignment. It uses target
+pseudo-labels only to choose class-compatible source and target samples for the
+domain-adversarial loss, avoiding direct target pseudo-label supervision while
+reducing class-misaligned domain discriminator shortcuts, following `Implicit
+Class-Conditioned Domain Alignment for Unsupervised Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -138,6 +143,8 @@ OfficeHome/
 - `TCM`: transporting causal mechanisms with learned mechanism proxies,
   interventional mechanism-prior prediction, mechanism alignment, diversity
   regularization, and confident target pseudo-label adaptation.
+- `ICDA`: implicit class-conditioned domain alignment with pseudo-label-guided
+  source/target sample selection for domain-adversarial training.
 
 ## Run Examples
 
@@ -241,6 +248,12 @@ OfficeHome with TCM:
 
 ```powershell
 python uda/tcm.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with ICDA:
+
+```powershell
+python uda/icda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -365,6 +378,12 @@ The same split files can be used with TCM:
 python uda/tcm.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with ICDA:
+
+```powershell
+python uda/icda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -410,3 +429,6 @@ available.
   `Transporting Causal Mechanisms for Unsupervised Domain Adaptation`, ICCV
   2021.
   https://openaccess.thecvf.com/content/ICCV2021/html/Yue_Transporting_Causal_Mechanisms_for_Unsupervised_Domain_Adaptation_ICCV_2021_paper.html
+- Xiang Jiang, Qicheng Lao, Stan Matwin, and Mohammad Havaei. `Implicit
+  Class-Conditioned Domain Alignment for Unsupervised Domain Adaptation`, ICML
+  2020. https://proceedings.mlr.press/v119/jiang20d.html
