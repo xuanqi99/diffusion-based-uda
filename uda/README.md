@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, and ICDA baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, and iMSDA baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -71,6 +71,11 @@ pseudo-labels only to choose class-compatible source and target samples for the
 domain-adversarial loss, avoiding direct target pseudo-label supervision while
 reducing class-misaligned domain discriminator shortcuts, following `Implicit
 Class-Conditioned Domain Alignment for Unsupervised Domain Adaptation`.
+iMSDA learns a partially identifiable latent representation with invariant and
+changing subspaces. This feature-level implementation uses a VAE-style encoder
+and decoder over backbone features, a domain-specific invertible affine flow for
+the changing subspace, source classification, and target entropy minimization,
+following `Partial disentanglement for domain adaptation`.
 
 Supported dataset presets:
 
@@ -145,6 +150,10 @@ OfficeHome/
   regularization, and confident target pseudo-label adaptation.
 - `ICDA`: implicit class-conditioned domain alignment with pseudo-label-guided
   source/target sample selection for domain-adversarial training.
+- `iMSDA`: identifiable multi-source domain adaptation style latent learning
+  with invariant/changing latent partitioning, domain-specific invertible
+  changing-part normalization, source classification, target entropy, and
+  feature-level VAE regularization.
 
 ## Run Examples
 
@@ -254,6 +263,12 @@ OfficeHome with ICDA:
 
 ```powershell
 python uda/icda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with iMSDA:
+
+```powershell
+python uda/imsda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -384,6 +399,12 @@ The same split files can be used with ICDA:
 python uda/icda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with iMSDA:
+
+```powershell
+python uda/imsda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -432,3 +453,7 @@ available.
 - Xiang Jiang, Qicheng Lao, Stan Matwin, and Mohammad Havaei. `Implicit
   Class-Conditioned Domain Alignment for Unsupervised Domain Adaptation`, ICML
   2020. https://proceedings.mlr.press/v119/jiang20d.html
+- Lingjing Kong, Shaoan Xie, Weiran Yao, Yujia Zheng, Guangyi Chen, Petar
+  Stojanov, Victor Akinwande, and Kun Zhang. `Partial disentanglement for
+  domain adaptation`, ICML 2022.
+  https://proceedings.mlr.press/v162/kong22a.html
