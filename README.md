@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, and iMSDA baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, and UniOT baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -190,6 +190,17 @@ The iMSDA-style entry follows `Partial disentanglement for domain adaptation`
 (ICML 2022) with a feature-level partially identifiable VAE, invariant/changing
 latent partitioning, domain-specific invertible changing-part normalization,
 source classification, and target entropy minimization.
+
+Run an OfficeHome UniOT baseline:
+
+```powershell
+python uda/uniot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The UniOT-style entry follows `Unified Optimal Transport Framework for
+Universal Domain Adaptation` (NeurIPS 2022) with Sinkhorn optimal transport
+between target samples and source-class/private prototypes, adaptive
+common-private mass filling, and target representation learning.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

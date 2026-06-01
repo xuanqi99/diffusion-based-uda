@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, and iMSDA baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, and UniOT baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -76,6 +76,12 @@ changing subspaces. This feature-level implementation uses a VAE-style encoder
 and decoder over backbone features, a domain-specific invertible affine flow for
 the changing subspace, source classification, and target entropy minimization,
 following `Partial disentanglement for domain adaptation`.
+UniOT uses optimal transport to jointly route target samples to source-class
+prototypes and target-private prototypes. This feature-level implementation
+uses adaptive common/private mass filling from target prediction statistics,
+Sinkhorn transport, source prototype compactness, target common-class soft
+training, and private-prototype clustering, following `Unified Optimal Transport
+Framework for Universal Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -154,6 +160,9 @@ OfficeHome/
   with invariant/changing latent partitioning, domain-specific invertible
   changing-part normalization, source classification, target entropy, and
   feature-level VAE regularization.
+- `UniOT`: unified optimal transport with source-class prototypes, learnable
+  target-private prototypes, adaptive common/private mass filling, Sinkhorn
+  transport, and target representation learning.
 
 ## Run Examples
 
@@ -269,6 +278,12 @@ OfficeHome with iMSDA:
 
 ```powershell
 python uda/imsda.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with UniOT:
+
+```powershell
+python uda/uniot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -405,6 +420,12 @@ The same split files can be used with iMSDA:
 python uda/imsda.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with UniOT:
+
+```powershell
+python uda/uniot.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -457,3 +478,6 @@ available.
   Stojanov, Victor Akinwande, and Kun Zhang. `Partial disentanglement for
   domain adaptation`, ICML 2022.
   https://proceedings.mlr.press/v162/kong22a.html
+- Wanxing Chang, Ye Shi, Hoang Duong Tuan, and Jingya Wang. `Unified Optimal
+  Transport Framework for Universal Domain Adaptation`, NeurIPS 2022.
+  https://proceedings.neurips.cc/paper_files/paper/2022/hash/bda6843dbbca0b09b8769122e0928fad-Abstract-Conference.html
