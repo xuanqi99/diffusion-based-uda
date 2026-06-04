@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, and UniOT baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, and WDGRL baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -82,6 +82,11 @@ uses adaptive common/private mass filling from target prediction statistics,
 Sinkhorn transport, source prototype compactness, target common-class soft
 training, and private-prototype clustering, following `Unified Optimal Transport
 Framework for Universal Domain Adaptation`.
+WDGRL trains a domain critic to estimate the empirical Wasserstein distance
+between source and target feature distributions. The critic is regularized with
+a gradient penalty, while the feature extractor minimizes source classification
+loss plus the critic-estimated Wasserstein distance, following `Wasserstein
+Distance Guided Representation Learning for Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -163,6 +168,9 @@ OfficeHome/
 - `UniOT`: unified optimal transport with source-class prototypes, learnable
   target-private prototypes, adaptive common/private mass filling, Sinkhorn
   transport, and target representation learning.
+- `WDGRL`: Wasserstein distance guided representation learning with a neural
+  domain critic, WGAN-GP-style gradient penalty, source classification, and
+  feature-level Wasserstein alignment.
 
 ## Run Examples
 
@@ -284,6 +292,12 @@ OfficeHome with UniOT:
 
 ```powershell
 python uda/uniot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with WDGRL:
+
+```powershell
+python uda/wdgrl.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -426,6 +440,12 @@ The same split files can be used with UniOT:
 python uda/uniot.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with WDGRL:
+
+```powershell
+python uda/wdgrl.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -481,3 +501,6 @@ available.
 - Wanxing Chang, Ye Shi, Hoang Duong Tuan, and Jingya Wang. `Unified Optimal
   Transport Framework for Universal Domain Adaptation`, NeurIPS 2022.
   https://proceedings.neurips.cc/paper_files/paper/2022/hash/bda6843dbbca0b09b8769122e0928fad-Abstract-Conference.html
+- Jian Shen, Yanru Qu, Weinan Zhang, and Yong Yu. `Wasserstein Distance Guided
+  Representation Learning for Domain Adaptation`, AAAI 2018.
+  https://ojs.aaai.org/index.php/AAAI/article/view/11784
