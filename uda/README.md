@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, and WDGRL baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, and PPOT baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -87,6 +87,13 @@ between source and target feature distributions. The critic is regularized with
 a gradient penalty, while the feature extractor minimizes source classification
 loss plus the critic-estimated Wasserstein distance, following `Wasserstein
 Distance Guided Representation Learning for Domain Adaptation`.
+PPOT learns a source-target transport plan whose probabilities are polarized
+toward explicit intra-class and inter-class structure. This mini-batch
+implementation combines feature and semantic OT costs, Sinkhorn transport,
+dynamic probability-polarization margins from source labels and target
+pseudo-labels, source classification, and transported-source supervision,
+following `Probability-Polarized Optimal Transport for Unsupervised Domain
+Adaptation`.
 
 Supported dataset presets:
 
@@ -171,6 +178,9 @@ OfficeHome/
 - `WDGRL`: Wasserstein distance guided representation learning with a neural
   domain critic, WGAN-GP-style gradient penalty, source classification, and
   feature-level Wasserstein alignment.
+- `PPOT`: probability-polarized optimal transport with feature/semantic costs,
+  dynamic intra/inter-class transport margins, target pseudo-label structure,
+  and transported-source target-space supervision.
 
 ## Run Examples
 
@@ -298,6 +308,12 @@ OfficeHome with WDGRL:
 
 ```powershell
 python uda/wdgrl.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with PPOT:
+
+```powershell
+python uda/ppot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -446,6 +462,12 @@ The same split files can be used with WDGRL:
 python uda/wdgrl.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with PPOT:
+
+```powershell
+python uda/ppot.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -504,3 +526,6 @@ available.
 - Jian Shen, Yanru Qu, Weinan Zhang, and Yong Yu. `Wasserstein Distance Guided
   Representation Learning for Domain Adaptation`, AAAI 2018.
   https://ojs.aaai.org/index.php/AAAI/article/view/11784
+- Yan Wang, Chuan-Xian Ren, Yi-Ming Zhai, You-Wei Luo, and Hong Yan.
+  `Probability-Polarized Optimal Transport for Unsupervised Domain Adaptation`,
+  AAAI 2024. https://ojs.aaai.org/index.php/AAAI/article/view/29493

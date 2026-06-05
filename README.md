@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, and WDGRL baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, and PPOT baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -211,6 +211,17 @@ python uda/wdgrl.py --data-root D:\datasets --dataset officehome --source Art --
 The WDGRL entry follows `Wasserstein Distance Guided Representation Learning
 for Domain Adaptation` (AAAI 2018) with a neural domain critic, Wasserstein
 feature alignment, and gradient penalty regularization.
+
+Run an OfficeHome PPOT baseline:
+
+```powershell
+python uda/ppot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The PPOT entry follows `Probability-Polarized Optimal Transport for
+Unsupervised Domain Adaptation` (AAAI 2024) with probability-polarized
+source-target transport, dynamic intra/inter-class transport margins, and
+transported-source target-space supervision.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.
