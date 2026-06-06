@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, and PPOT baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, and CPH baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -94,6 +94,12 @@ dynamic probability-polarization margins from source labels and target
 pseudo-labels, source classification, and transported-source supervision,
 following `Probability-Polarized Optimal Transport for Unsupervised Domain
 Adaptation`.
+CPH learns hash-friendly domain-shared representations on a unit hypersphere.
+This feature-level implementation uses learnable category prototypes,
+source/target prototype contrastive learning, dual-domain relation preservation
+over continuous hash codes, prototype separation, bit quantization, and bit
+balance, following `Effective Comparative Prototype Hashing for Unsupervised
+Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -181,6 +187,9 @@ OfficeHome/
 - `PPOT`: probability-polarized optimal transport with feature/semantic costs,
   dynamic intra/inter-class transport margins, target pseudo-label structure,
   and transported-source target-space supervision.
+- `CPH`: comparative prototype hashing with unit-hypersphere prototypes,
+  source/target prototype contrastive learning, dual-domain hash relation
+  preservation, prototype separation, quantization, and bit-balance losses.
 
 ## Run Examples
 
@@ -314,6 +323,12 @@ OfficeHome with PPOT:
 
 ```powershell
 python uda/ppot.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with CPH:
+
+```powershell
+python uda/cph.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32 --hash-bits 64
 ```
 
 Office31:
@@ -468,6 +483,12 @@ The same split files can be used with PPOT:
 python uda/ppot.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with CPH:
+
+```powershell
+python uda/cph.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65 --hash-bits 64
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -529,3 +550,6 @@ available.
 - Yan Wang, Chuan-Xian Ren, Yi-Ming Zhai, You-Wei Luo, and Hong Yan.
   `Probability-Polarized Optimal Transport for Unsupervised Domain Adaptation`,
   AAAI 2024. https://ojs.aaai.org/index.php/AAAI/article/view/29493
+- Hui Cui, Lihai Zhao, Fengling Li, Lei Zhu, Xiaohui Han, and Jingjing Li.
+  `Effective Comparative Prototype Hashing for Unsupervised Domain Adaptation`,
+  AAAI 2024. https://ojs.aaai.org/index.php/AAAI/article/view/28674
