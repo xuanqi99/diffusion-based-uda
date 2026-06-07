@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, and CPH baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, and SAMB-D baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -100,6 +100,13 @@ source/target prototype contrastive learning, dual-domain relation preservation
 over continuous hash codes, prototype separation, bit quantization, and bit
 balance, following `Effective Comparative Prototype Hashing for Unsupervised
 Domain Adaptation`.
+SAMB-D learns semantic group tokens that broadcast domain-aware messages back to
+image features. This feature-level implementation adapts the ViT-oriented SAMB
+idea to the repository's classifier backbones with group-token message
+aggregation, broadcast feature refinement, domain-adversarial alignment over
+group messages, group diversity regularization, message consistency, and target
+pseudo-label self-training, following `Semantic-aware Message Broadcasting for
+Efficient Unsupervised Domain Adaptation`.
 
 Supported dataset presets:
 
@@ -190,6 +197,9 @@ OfficeHome/
 - `CPH`: comparative prototype hashing with unit-hypersphere prototypes,
   source/target prototype contrastive learning, dual-domain hash relation
   preservation, prototype separation, quantization, and bit-balance losses.
+- `SAMB-D`: semantic-aware message broadcasting with learned group tokens,
+  broadcast feature refinement, group-message domain alignment, message
+  consistency, group diversity, and target pseudo-label self-training.
 
 ## Run Examples
 
@@ -329,6 +339,12 @@ OfficeHome with CPH:
 
 ```powershell
 python uda/cph.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32 --hash-bits 64
+```
+
+OfficeHome with SAMB-D:
+
+```powershell
+python uda/sambd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -489,6 +505,12 @@ The same split files can be used with CPH:
 python uda/cph.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65 --hash-bits 64
 ```
 
+The same split files can be used with SAMB-D:
+
+```powershell
+python uda/sambd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -553,3 +575,6 @@ available.
 - Hui Cui, Lihai Zhao, Fengling Li, Lei Zhu, Xiaohui Han, and Jingjing Li.
   `Effective Comparative Prototype Hashing for Unsupervised Domain Adaptation`,
   AAAI 2024. https://ojs.aaai.org/index.php/AAAI/article/view/28674
+- Xin Li, Cuiling Lan, Guoqiang Wei, and Zhibo Chen. `Semantic-aware Message
+  Broadcasting for Efficient Unsupervised Domain Adaptation`, arXiv 2022.
+  https://arxiv.org/abs/2212.02739
