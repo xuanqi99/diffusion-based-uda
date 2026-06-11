@@ -4,7 +4,7 @@ This repository is for research on using diffusion-based generative models to
 improve unsupervised domain adaptation (UDA).
 
 The current codebase includes runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN,
-CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, and SAMB-D baselines under `uda/`. These standard UDA methods are
+CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, SAMB-D, and TCRL baselines under `uda/`. These standard UDA methods are
 intended as clean reference points for future diffusion-assisted experiments,
 such as
 diffusion-generated target style images, synthetic source augmentation, or
@@ -244,6 +244,17 @@ The SAMB-D-style entry follows `Semantic-aware Message Broadcasting for
 Efficient Unsupervised Domain Adaptation` with learned semantic group tokens,
 message-broadcast feature refinement, domain-adversarial group-message
 alignment, and target pseudo-label self-training.
+
+Run an OfficeHome TCRL baseline:
+
+```powershell
+python uda/tcrl.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+The TCRL-style entry follows `Triplet Contrastive Representation Learning for
+Unsupervised Vehicle Re-Identification` with global/part embeddings,
+cluster-prototype contrastive learning, supervised contrastive learning,
+batch-hard triplet regularization, and target pseudo-label adaptation.
 
 See `uda/README.md` for detailed dataset layout, list-file mode, and additional
 run examples.

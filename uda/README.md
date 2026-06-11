@@ -3,7 +3,7 @@
 This directory is a research workspace for studying how diffusion-based
 generative models can improve unsupervised domain adaptation (UDA). The current
 implementation provides runnable PyTorch ERM, DANN, AFN, CDAN, MDD, JAN, CAN,
-GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, and SAMB-D baselines, which are useful as clean reference points before adding
+GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, SAMB-D, and TCRL baselines, which are useful as clean reference points before adding
 diffusion-generated images, diffusion-based feature regularization, or other
 generative adaptation strategies.
 
@@ -107,6 +107,13 @@ aggregation, broadcast feature refinement, domain-adversarial alignment over
 group messages, group diversity regularization, message consistency, and target
 pseudo-label self-training, following `Semantic-aware Message Broadcasting for
 Efficient Unsupervised Domain Adaptation`.
+TCRL bridges local part embeddings and global embeddings through class-level
+cluster prototypes. This classification-oriented adaptation uses source
+classification, global-to-prototype and part-to-prototype contrastive learning,
+supervised contrastive learning over source and confident target samples,
+batch-hard triplet regularization, part-global consistency, prototype
+separation, and target entropy minimization, following `Triplet Contrastive
+Representation Learning for Unsupervised Vehicle Re-Identification`.
 
 Supported dataset presets:
 
@@ -200,6 +207,10 @@ OfficeHome/
 - `SAMB-D`: semantic-aware message broadcasting with learned group tokens,
   broadcast feature refinement, group-message domain alignment, message
   consistency, group diversity, and target pseudo-label self-training.
+- `TCRL`: triplet contrastive representation learning with global/part
+  embeddings, class-level cluster prototypes, prototype contrastive losses,
+  supervised contrastive learning, batch-hard triplet regularization, and
+  target pseudo-label adaptation.
 
 ## Run Examples
 
@@ -345,6 +356,12 @@ OfficeHome with SAMB-D:
 
 ```powershell
 python uda/sambd.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
+```
+
+OfficeHome with TCRL:
+
+```powershell
+python uda/tcrl.py --data-root D:\datasets --dataset officehome --source Art --target Clipart --arch resnet50 --epochs 20 --batch-size 32
 ```
 
 Office31:
@@ -511,6 +528,12 @@ The same split files can be used with SAMB-D:
 python uda/sambd.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
 ```
 
+The same split files can be used with TCRL:
+
+```powershell
+python uda/tcrl.py --data-root D:\datasets --dataset officehome --source-list source.txt --target-list target.txt --num-classes 65
+```
+
 Outputs are written to `runs/` by default and include `config.json`,
 `metrics.csv`, `checkpoint_last.pt`, and `best_target.pt` when target labels are
 available.
@@ -578,3 +601,6 @@ available.
 - Xin Li, Cuiling Lan, Guoqiang Wei, and Zhibo Chen. `Semantic-aware Message
   Broadcasting for Efficient Unsupervised Domain Adaptation`, arXiv 2022.
   https://arxiv.org/abs/2212.02739
+- Fei Shen, Xiaoyu Du, Liyan Zhang, Xiangbo Shu, and Jinhui Tang. `Triplet
+  Contrastive Representation Learning for Unsupervised Vehicle
+  Re-Identification`, arXiv 2023. https://arxiv.org/abs/2301.09498

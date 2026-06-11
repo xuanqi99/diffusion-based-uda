@@ -1,4 +1,4 @@
-"""Runnable ERM, DANN, AFN, CDAN, MDD, JAN, CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, and SAMB-D baselines for UDA datasets."""
+"""Runnable ERM, DANN, AFN, CDAN, MDD, JAN, CAN, GTA, ADDA, MCD, SymmNets, GVB-GD, ETD, SRDC, ACTIR, TCM, ICDA, iMSDA, UniOT, WDGRL, PPOT, CPH, SAMB-D, and TCRL baselines for UDA datasets."""
 
 __all__ = ["__version__"]
 
